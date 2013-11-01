@@ -28,7 +28,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.newrdev.tagphoto.CameraPreviewActivity"
+            android:name="com.newrdev.tagphoto.CameraActivity"
             android:label="@string/app_name" >
         </activity>
     </application>
