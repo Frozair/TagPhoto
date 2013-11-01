@@ -28,7 +28,6 @@ public class CameraActivity extends Activity{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_camera);
 		_context = this;
-		System.out.println("In CameraActivity");
 		
 		if(safeCameraOpen()){
 			_preview = new Preview(this, _camera);
@@ -40,11 +39,7 @@ public class CameraActivity extends Activity{
 
 				@Override
 				public void onClick(View v) {
-					switch(_preview.getState()){
-					case FROZEN:
-					default:
-						_camera.takePicture(null, null, MyJPGCallback);
-					}				
+					_camera.takePicture(null, null, MyJPGCallback);			
 				}
 				
 			});
@@ -54,12 +49,8 @@ public class CameraActivity extends Activity{
 	private PictureCallback MyJPGCallback = new PictureCallback(){
 
 		@Override
-		public void onPictureTaken(byte[] data, Camera camera) {
-			// Set preview state to frozen
-			_preview.setState(Preview.State.FROZEN);
+		public void onPictureTaken(byte[] data, Camera camera) {		
 			
-			//String name = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-			//name += "IMG_" + name + ".jpg";
 			
 			File pictureFile = getOutputMediaFile("temp.jpg");
 			if(pictureFile == null){
@@ -115,17 +106,18 @@ public class CameraActivity extends Activity{
 	}
 	
 	private void releaseCameraAndPreview(){
+		if(_preview != null)
+			_preview.setCamera(null);
 		if (_camera != null) {
 	        _camera.release();
 	        _camera = null;
-	        _preview.setCamera(null);
 		}
 	}
 	
 	@Override
     protected void onResume() {
         super.onResume();
-        if(safeCameraOpen())
+        if(_camera == null && safeCameraOpen())
 			_preview.setCamera(_camera);
     }
 	

@@ -9,9 +9,6 @@ import android.view.SurfaceView;
 public class Preview extends SurfaceView implements SurfaceHolder.Callback {
 	private SurfaceHolder _holder;
 	private Camera _camera;
-	private State _state;
-	
-	public enum State {PREVIEW, BUSY, FROZEN};
 
 	public Preview(Context context, Camera camera) {
 		super(context);
@@ -34,7 +31,6 @@ public class Preview extends SurfaceView implements SurfaceHolder.Callback {
 			_camera.setPreviewDisplay(_holder);	
 			_camera.setDisplayOrientation(90);
 			_camera.startPreview();
-			_state = State.PREVIEW;
 		}catch(IOException e){
 			e.printStackTrace();
 		}		
@@ -46,16 +42,10 @@ public class Preview extends SurfaceView implements SurfaceHolder.Callback {
 			_camera.stopPreview();
 		}
 	}
-	
-	public State getState(){
-		return _state;
-	}
-	
-	public void setState(State state){
-		_state = state;
-	}
 
 	public void setCamera(Camera camera) {
+		System.out.println("Setting camera, is null? " + (camera == null));
+		if(_camera != null) _camera.release();
 		_camera = camera;
 	}
 }
