@@ -7,7 +7,6 @@ import android.app.Activity;
 import android.content.Intent;
 
 public class MainActivity extends Activity {
-	private PhotoManager _manager;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -24,18 +23,4 @@ public class MainActivity extends Activity {
 			}
 		});
 	}
-	 
-	@Override
-	protected void onStart() {
-	    super.onStart();
-	    _manager = new PhotoManager(this.getApplicationContext());
-	}
-	 
-	@Override
-	protected void onStop() {
-	    super.onStop();
-	    if(_manager != null)
-	    	_manager.release();
-	}
-
 }

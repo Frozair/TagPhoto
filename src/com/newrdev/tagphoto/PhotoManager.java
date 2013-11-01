@@ -39,8 +39,8 @@ public class PhotoManager {
 		return photo;
 	}
 	
-	public Photo getPhotoById(String id){
-		Cursor cursor = this._myDB.query("SELECT * FROM "+MyDB.PHOTOS_TABLE+" WHERE path = ?", new String[] {id});
+	public Photo getPhotoById(long id){
+		Cursor cursor = this._myDB.query("SELECT * FROM "+MyDB.PHOTOS_TABLE+" WHERE _id = ?", new String[] {String.valueOf(id)});
 		cursor.moveToFirst();
 		return cursorToPhoto(cursor);
 	}
