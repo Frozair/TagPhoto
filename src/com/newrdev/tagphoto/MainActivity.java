@@ -19,7 +19,7 @@ public class MainActivity extends Activity {
 			
 			@Override
 			public void onClick(View v) {
-				Intent intent = new Intent(getApplicationContext(), CameraPreviewActivity.class);
+				Intent intent = new Intent(getApplicationContext(), CameraActivity.class);
 				startActivity(intent);
 			}
 		});
