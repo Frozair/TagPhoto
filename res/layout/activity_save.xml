@@ -9,7 +9,7 @@
         android:id="@id/preview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/save"
+        android:layout_above="@+id/use"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true" >
@@ -17,12 +17,12 @@
     </FrameLayout>
 
     <Button
-        android:id="@+id/save"
+        android:id="@+id/use"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:text="Save" />
+        android:text="Use" />
 
     <Button
         android:id="@+id/cancel"

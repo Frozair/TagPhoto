@@ -39,8 +39,13 @@ public class PhotoManager {
 		return photo;
 	}
 	
+	public void update(long id, String column, String value){
+		this._myDB.query("UPDATE " + MyDB.PHOTOS_TABLE + " SET " + column 
+					+ " = ? WHERE _id = ?", new String[] {value, Long.toString(id)} );
+	}
+	
 	public Photo getPhotoById(long id){
-		Cursor cursor = this._myDB.query("SELECT * FROM "+MyDB.PHOTOS_TABLE+" WHERE _id = ?", new String[] {String.valueOf(id)});
+		Cursor cursor = this._myDB.query("SELECT * FROM "+MyDB.PHOTOS_TABLE+" WHERE _id = ?", new String[] {Long.toString(id)});
 		cursor.moveToFirst();
 		return cursorToPhoto(cursor);
 	}

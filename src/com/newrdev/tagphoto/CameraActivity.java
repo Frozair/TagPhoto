@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -20,14 +21,15 @@ import android.widget.Toast;
 public class CameraActivity extends Activity{
 	private Preview _preview;
 	private Camera _camera;
-	private static File _mediaStorageDir;
 	private Context _context;
+	private FileManager _manager;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_camera);
 		_context = this;
+		_manager = new FileManager();
 		
 		if(safeCameraOpen()){
 			_preview = new Preview(this, _camera);
@@ -49,10 +51,8 @@ public class CameraActivity extends Activity{
 	private PictureCallback MyJPGCallback = new PictureCallback(){
 
 		@Override
-		public void onPictureTaken(byte[] data, Camera camera) {		
-			
-			
-			File pictureFile = getOutputMediaFile("temp.jpg");
+		public void onPictureTaken(byte[] data, Camera camera) {	
+			File pictureFile = _manager.getOutputMediaFile("temp.jpg");
 			if(pictureFile == null){
 				Toast.makeText(getApplicationContext(), "Failed to save file.", Toast.LENGTH_SHORT).show();
 				return;
@@ -79,17 +79,6 @@ public class CameraActivity extends Activity{
 		}
 		
 	};
-	
-	private static File getOutputMediaFile(String name){
-		 _mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "TagPhoto");
-		// Create the storage directory if it does not exist
-	    if (!_mediaStorageDir.exists()){
-	        if (!_mediaStorageDir.mkdirs()){
-	            return null;
-	        }
-	    }
-	    return new File(_mediaStorageDir.getPath() + File.separator + name); 
-	}
 
 	private boolean safeCameraOpen(){
 		boolean open = false;

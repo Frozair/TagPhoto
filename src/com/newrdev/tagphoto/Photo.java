@@ -46,4 +46,9 @@ public class Photo {
 	public void setPath(String path) {
 		this._path = path;
 	}
+	
+	@Override
+	public String toString(){
+		return "Id: " + _id + ", Title: " + _title + ", Description: " + _description + ", Path: " + _path;
+	}
 }
