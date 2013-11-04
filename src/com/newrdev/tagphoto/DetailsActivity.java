@@ -69,9 +69,12 @@ public class DetailsActivity extends Activity implements OnClickListener{
 			EditText title = (EditText)findViewById(R.id.title);
 			EditText desc = (EditText)findViewById(R.id.description);
 			
-			this._manager.update(this._photo.getId(), MyDB.PHOTOS_TITLE, title.getText().toString());
-			this._manager.update(this._photo.getId(), MyDB.PHOTOS_TITLE, desc.getText().toString());
+			long id = this._photo.getId();
+			
+			_photo = this._manager.update(id, MyDB.PHOTOS_TITLE, title.getText().toString());
+			_photo = this._manager.update(id, MyDB.PHOTOS_DESC, desc.getText().toString());
 
+			
 			System.out.println("Photo info -- " + this._photo.toString());
 			Toast.makeText(this, "Photo information has been updated.", Toast.LENGTH_SHORT).show();
 			break;

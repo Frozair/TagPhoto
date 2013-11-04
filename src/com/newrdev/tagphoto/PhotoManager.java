@@ -1,5 +1,7 @@
 package com.newrdev.tagphoto;
 
+import java.util.ArrayList;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -39,9 +41,28 @@ public class PhotoManager {
 		return photo;
 	}
 	
-	public void update(long id, String column, String value){
-		this._myDB.query("UPDATE " + MyDB.PHOTOS_TABLE + " SET " + column 
-					+ " = ? WHERE _id = ?", new String[] {value, Long.toString(id)} );
+	public Photo update(long id, String column, String value){
+		System.out.println("Updating column: " + column + " to val: " + value + " where id = " + id);
+		Cursor cursor = this._myDB.query("UPDATE " + MyDB.PHOTOS_TABLE + " SET " + column + 
+						" = ? WHERE _id = ?", new String[] {value, Long.toString(id)});
+		
+		if(cursor!= null && cursor.moveToFirst())
+			return cursorToPhoto(cursor);
+		
+		return null;
+	}
+	
+	public Photo[] getAll(){
+		Cursor cursor = this._myDB.query("SELECT * FROM "+MyDB.PHOTOS_TABLE, null);
+		cursor.moveToFirst();
+		
+		ArrayList<Photo> photos = new ArrayList<Photo>();
+		while (cursor.isAfterLast() == false){
+		    photos.add(cursorToPhoto(cursor));
+		    cursor.moveToNext();
+		}
+		
+		return photos.toArray(new Photo[photos.size()]);
 	}
 	
 	public Photo getPhotoById(long id){
@@ -56,6 +77,8 @@ public class PhotoManager {
 		photo.setTitle(cursor.getString(1));
 		photo.setDescription(cursor.getString(2));
 		photo.setPath(cursor.getString(3));
+		
+		System.out.println("in cursor to photo with info: " + photo.toString());
 		return photo;
 	}
 }
