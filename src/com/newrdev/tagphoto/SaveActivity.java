@@ -3,6 +3,7 @@ package com.newrdev.tagphoto;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -13,13 +14,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.FrameLayout.LayoutParams;
 import android.widget.ImageView;
 
 public class SaveActivity extends Activity implements OnClickListener{
 	private PhotoManager _manager;
-	private FrameLayout _frame;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -30,13 +28,9 @@ public class SaveActivity extends Activity implements OnClickListener{
 		if(imgFile.exists()){
 		    Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
 
-		    ImageView myImage = new ImageView(this);
+		    ImageView myImage = (ImageView)findViewById(R.id.preview_image);
 		    myImage.setImageBitmap(myBitmap);
 		    myImage.setRotation(90);
-		    myImage.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-		    
-		    _frame = (FrameLayout)findViewById(R.id.preview);
-			_frame.addView(myImage);	
 		}
 		
 		Button b1 = (Button)findViewById(R.id.cancel);
@@ -51,13 +45,7 @@ public class SaveActivity extends Activity implements OnClickListener{
 	    super.onStart();
 	    _manager = new PhotoManager(this.getApplicationContext());
 	}
-	 
-	@Override
-	protected void onStop() {
-	    super.onStop();
-	    if(_manager != null)
-	    	_manager.release();
-	}
+	
 
 	@Override
 	public void onClick(View view) {
@@ -67,7 +55,7 @@ public class SaveActivity extends Activity implements OnClickListener{
 			finish();
 			break;
 		case R.id.use:
-			String name = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+			String name = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date());
 			name += "IMG_" + name + ".jpg";
 			File pictureFile = FileManager.getOutputMediaFile("temp.jpg");
 			File renameTo = FileManager.getOutputMediaFile(name);
@@ -78,6 +66,7 @@ public class SaveActivity extends Activity implements OnClickListener{
 			
 			Intent intent = new Intent(this, DetailsActivity.class);
 			intent.putExtra("PHOTO_ID", photo.getId());
+			intent.putExtra("SAVED", true);
 			startActivity(intent);
 			break;
 		}

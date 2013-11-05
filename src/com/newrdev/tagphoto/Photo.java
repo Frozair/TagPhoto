@@ -7,9 +7,9 @@ public class Photo {
 	private long _id;
 	
 	public Photo(String title, String desc, String path) {
-		this._title = title;
-		this._description = desc;
-		this._path = path;
+		this._title = (title == null ? "" : title);
+		this._description = (desc == null ? "" : desc);
+		this._path = (path == null ? "" : path);
 	}
 
 	public Photo() {

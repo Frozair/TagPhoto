@@ -35,7 +35,10 @@ public class PhotosAdapter extends ArrayAdapter<Photo> {
     //Set text
     textView.setText(this._photos[position].getTitle());
     
-    System.out.println("Photo info -- " + this._photos[position].toString());
     return rowView;
+  }
+  
+  public Photo getPhoto(int position){
+	  return this._photos[position];
   }
 } 

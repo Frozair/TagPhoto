@@ -9,10 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -22,14 +19,12 @@ public class CameraActivity extends Activity{
 	private Preview _preview;
 	private Camera _camera;
 	private Context _context;
-	private FileManager _manager;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_camera);
 		_context = this;
-		_manager = new FileManager();
 		
 		if(safeCameraOpen()){
 			_preview = new Preview(this, _camera);
@@ -52,7 +47,7 @@ public class CameraActivity extends Activity{
 
 		@Override
 		public void onPictureTaken(byte[] data, Camera camera) {	
-			File pictureFile = _manager.getOutputMediaFile("temp.jpg");
+			File pictureFile = FileManager.getOutputMediaFile("temp.jpg");
 			if(pictureFile == null){
 				Toast.makeText(getApplicationContext(), "Failed to save file.", Toast.LENGTH_SHORT).show();
 				return;
@@ -70,12 +65,6 @@ public class CameraActivity extends Activity{
 			
 			Intent intent = new Intent(_context, SaveActivity.class);
 			startActivity(intent);
-			
-			//Uri path = Uri.fromFile(pictureFile);
-			//Photo photo = _manager.insert("My new photo", "", path.toString());
-			//Photo other = _manager.getPhotoById(photo.getId());
-			
-			//System.out.println("My photo id is: " + other.getId() + " path: " + other.getPath() + " and title: " + other.getTitle());
 		}
 		
 	};
@@ -83,14 +72,11 @@ public class CameraActivity extends Activity{
 	private boolean safeCameraOpen(){
 		boolean open = false;
 		try{	
-			System.out.println("Opening camera");
 			releaseCameraAndPreview();
 			_camera = Camera.open();
 			open = (_camera != null);
 		}catch(Exception e){
-			Log.i("MyDB", "Exception thrown: " + e.getMessage());
 		}
-		Log.i("MyDB", "Camera safe open? " + open);
 		return open;
 	}
 	

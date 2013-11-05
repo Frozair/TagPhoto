@@ -37,7 +37,7 @@ public class MyDB {
         _dbHelper = new DatabaseHelper(_context);
     }
 
-    public MyDB open() throws SQLException 
+    private MyDB open() throws SQLException 
     {
         _db = _dbHelper.getWritableDatabase();
         return this;
@@ -49,21 +49,33 @@ public class MyDB {
         _dbHelper.close();
     }
 
+    //rawQuery doesn't actually execute until a call is made on the returned cursor (example: cursor.moveToFirst()). 
     public Cursor query(String query, String[] args){
-    	Cursor cursor = this._db.rawQuery(query, args);
-    	return cursor;
+    	try{
+			open();
+		}catch(SQLException e){
+			Log.d("MyDB", "Failed to open DB");
+		}
+    	return this._db.rawQuery(query, args);
     }
 
     public long insert(ContentValues initialValues,String tablename) 
     {
-        return _db.insert(tablename, null, initialValues);
+    	try{
+			open();
+		}catch(SQLException e){
+			Log.d("MyDB", "Failed to open DB");
+		}
+    	long id = _db.insert(tablename, null, initialValues);
+    	close();
+    	
+        return id;
     }
     
     private static class DatabaseHelper extends SQLiteOpenHelper {
     	
         DatabaseHelper(Context context) {
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
-            Log.i("MyDB", "Creating database, path: " + context.getDatabasePath(DATABASE_NAME));
         }
 
         @Override

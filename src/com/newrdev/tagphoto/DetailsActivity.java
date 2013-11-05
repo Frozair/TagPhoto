@@ -1,6 +1,7 @@
 package com.newrdev.tagphoto;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -8,14 +9,15 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
-import android.widget.FrameLayout.LayoutParams;
 
 public class DetailsActivity extends Activity implements OnClickListener{
 	private PhotoManager _manager;
 	private Photo _photo;
+	private boolean _saveActivity = false;
+	private EditText _title;
+	private EditText _desc;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -23,18 +25,22 @@ public class DetailsActivity extends Activity implements OnClickListener{
 		setContentView(R.layout.activity_details);
 		
 		_manager = new PhotoManager(this.getApplicationContext());
+		_title = (EditText)findViewById(R.id.title);
+		_desc = (EditText)findViewById(R.id.description);
+		
 		//Get photo id
 		Bundle extras = getIntent().getExtras();
+		if(extras.getBoolean("SAVED"))
+			_saveActivity = true;
+		
 		this._photo = this._manager.getPhotoById(extras.getLong("PHOTO_ID"));
+		_title.setText(_photo.getTitle());
+		_desc.setText(_photo.getDescription());
 
 		Bitmap myBitmap = BitmapFactory.decodeFile(this._photo.getPath());
-	    ImageView myImage = new ImageView(this);
+	    ImageView myImage = (ImageView)findViewById(R.id.preview_image);
 	    myImage.setImageBitmap(myBitmap);
 	    myImage.setRotation(90);
-	    myImage.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-	    
-		FrameLayout frame = (FrameLayout)findViewById(R.id.preview);
-		frame.addView(myImage);	
 		
 		// Set onclick for buttons
 		Button b1 = (Button)findViewById(R.id.back);
@@ -50,13 +56,7 @@ public class DetailsActivity extends Activity implements OnClickListener{
 	    if(_manager == null)
 	    	_manager = new PhotoManager(this.getApplicationContext());
 	}
-	 
-	@Override
-	protected void onStop() {
-	    super.onStop();
-	    if(_manager != null)
-	    	_manager.release();
-	}
+	
 
 	@Override
 	public void onClick(View view) {
@@ -66,17 +66,16 @@ public class DetailsActivity extends Activity implements OnClickListener{
 			finish();
 			break;
 		case R.id.save:
-			EditText title = (EditText)findViewById(R.id.title);
-			EditText desc = (EditText)findViewById(R.id.description);
-			
-			long id = this._photo.getId();
-			
-			_photo = this._manager.update(id, MyDB.PHOTOS_TITLE, title.getText().toString());
-			_photo = this._manager.update(id, MyDB.PHOTOS_DESC, desc.getText().toString());
+			this._manager.update(this._photo.getId(), MyDB.PHOTOS_TITLE, this._title.getText().toString());
+			this._manager.update(this._photo.getId(), MyDB.PHOTOS_DESC, this._desc.getText().toString());
 
-			
-			System.out.println("Photo info -- " + this._photo.toString());
 			Toast.makeText(this, "Photo information has been updated.", Toast.LENGTH_SHORT).show();
+			
+			if(_saveActivity){
+				Intent intent = new Intent(this, MainActivity.class);
+				intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				startActivity(intent);
+			}
 			break;
 		}
 		

@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.SQLException;
 import android.util.Log;
 
 
@@ -14,17 +13,8 @@ public class PhotoManager {
 	
 	public PhotoManager(Context context){
 		_myDB = new MyDB(context);
-		try{
-			_myDB.open();
-		}catch(SQLException e){
-			Log.d("MyDB", "Failed to open DB");
-		}
+		
 		Log.i("MyDB", "Created photomanger object");
-	}
-	
-	public void release(){
-		Log.i("MyDB", "Releasing photomanger object");
-		_myDB.close();
 	}
 	
 	public Photo insert(String title, String desc, String path){
@@ -41,15 +31,15 @@ public class PhotoManager {
 		return photo;
 	}
 	
-	public Photo update(long id, String column, String value){
+	public void update(long id, String column, String value){
 		System.out.println("Updating column: " + column + " to val: " + value + " where id = " + id);
 		Cursor cursor = this._myDB.query("UPDATE " + MyDB.PHOTOS_TABLE + " SET " + column + 
-						" = ? WHERE _id = ?", new String[] {value, Long.toString(id)});
+						" = ? WHERE _id = " + id, new String[] {value});
 		
-		if(cursor!= null && cursor.moveToFirst())
-			return cursorToPhoto(cursor);
 		
-		return null;
+		cursor.moveToFirst();
+		//cursorToPhoto(cursor);
+		this._myDB.close();
 	}
 	
 	public Photo[] getAll(){
@@ -68,7 +58,10 @@ public class PhotoManager {
 	public Photo getPhotoById(long id){
 		Cursor cursor = this._myDB.query("SELECT * FROM "+MyDB.PHOTOS_TABLE+" WHERE _id = ?", new String[] {Long.toString(id)});
 		cursor.moveToFirst();
-		return cursorToPhoto(cursor);
+		Photo photo = cursorToPhoto(cursor);
+		this._myDB.close();
+		
+		return photo;
 	}
 	
 	private Photo cursorToPhoto(Cursor cursor){
@@ -77,8 +70,6 @@ public class PhotoManager {
 		photo.setTitle(cursor.getString(1));
 		photo.setDescription(cursor.getString(2));
 		photo.setPath(cursor.getString(3));
-		
-		System.out.println("in cursor to photo with info: " + photo.toString());
 		return photo;
 	}
 }
