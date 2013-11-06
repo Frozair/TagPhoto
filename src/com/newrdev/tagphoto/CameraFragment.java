@@ -67,9 +67,7 @@ public class CameraFragment extends Fragment{
 				fos.write(data);
 				fos.close();
 			} catch (FileNotFoundException e) {
-	            System.out.println("File not found: " + e.getMessage());
 	        } catch (IOException e) {
-	            System.out.println("Error accessing file: " + e.getMessage());
 	        }
 			
 			Intent intent = new Intent(_context, SaveActivity.class);

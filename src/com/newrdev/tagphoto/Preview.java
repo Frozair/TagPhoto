@@ -19,15 +19,12 @@ public class Preview extends SurfaceView implements SurfaceHolder.Callback {
 	}
 
 	@Override
-	public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
-		System.out.println("format is: " + format + " (w, h): (" + w + ", " + h + ")");
-		
+	public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {		
 	}
 
 	@Override
 	public void surfaceCreated(SurfaceHolder holder) {
 		try{
-			System.out.println("Camera null? " + (_camera == null));
 			_camera.setPreviewDisplay(_holder);	
 			_camera.setDisplayOrientation(90);
 			_camera.startPreview();
@@ -44,7 +41,6 @@ public class Preview extends SurfaceView implements SurfaceHolder.Callback {
 	}
 
 	public void setCamera(Camera camera) {
-		System.out.println("Setting camera, is null? " + (camera == null));
 		if(_camera != null) _camera.release();
 		_camera = camera;
 	}

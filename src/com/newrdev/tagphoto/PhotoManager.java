@@ -32,7 +32,6 @@ public class PhotoManager {
 	}
 	
 	public void update(long id, String column, String value){
-		System.out.println("Updating column: " + column + " to val: " + value + " where id = " + id);
 		Cursor cursor = this._myDB.query("UPDATE " + MyDB.PHOTOS_TABLE + " SET " + column + 
 						" = ? WHERE _id = " + id, new String[] {value});
 		

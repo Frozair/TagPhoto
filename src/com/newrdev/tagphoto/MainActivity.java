@@ -16,6 +16,7 @@ import android.content.Intent;
 
 public class MainActivity extends Activity{
 	final static String CAMERA_FRAG = "Camera";
+	final static String BROWSE_FRAG = "Browser";
 	
 	private String[] _drawerItems;
 	private CharSequence _actionBarTitle;
@@ -52,24 +53,24 @@ public class MainActivity extends Activity{
 			// Highlight the selected item, update the title, and close the drawer
 		    _drawerList.setItemChecked(position, true);
 		    setTitle(_drawerItems[position]);
-		    _drawerLayout.closeDrawer(_drawerList);
+		    //_drawerLayout.closeDrawer(_drawerList);
+		    
+		    FragmentManager fragMngr = getFragmentManager();
+			FragmentTransaction xact = fragMngr.beginTransaction();
 			switch(position){
 			case 0:
-				FragmentManager fragMngr = getFragmentManager();
-				FragmentTransaction xact = fragMngr.beginTransaction();
 				if(fragMngr.findFragmentByTag(CAMERA_FRAG) == null){
-					xact.add(R.id.content, new CameraFragment(), CAMERA_FRAG);
+					xact.replace(R.id.content, new CameraFragment(), CAMERA_FRAG);
 				}
-				xact.commit();
 				break;
 				
 			case 1:
-				Intent intent = new Intent(getApplicationContext(), BrowseActivity.class);
-				startActivity(intent);
+				if(fragMngr.findFragmentByTag(BROWSE_FRAG) == null){
+					xact.replace(R.id.content, new BrowseFragment(), BROWSE_FRAG);
+				}
 				break;
 			}
-			
-
+			xact.commit();
 		}
 	}
 	

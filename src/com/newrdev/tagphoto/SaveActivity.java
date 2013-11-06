@@ -62,7 +62,6 @@ public class SaveActivity extends Activity implements OnClickListener{
 			pictureFile.renameTo(renameTo);
 
 			Photo photo = _manager.insert(null, null, Uri.fromFile(renameTo).getPath());
-			System.out.println("Photo info -- " + photo.toString());
 			
 			Intent intent = new Intent(this, DetailsActivity.class);
 			intent.putExtra("PHOTO_ID", photo.getId());
