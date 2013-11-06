@@ -5,33 +5,39 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
-public class CameraActivity extends Activity{
+public class CameraFragment extends Fragment{
 	private Preview _preview;
 	private Camera _camera;
 	private Context _context;
 	
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_camera);
-		_context = this;
-		
+	public CameraFragment(){
+		//For fragments, we do nothing in constructor
+	}
+	
+	 @Override
+     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		View view = inflater.inflate(R.layout.activity_camera, container, false); // False so that the container can handle the fragment layout correctly
+		 
+		_context = this.getActivity();
 		if(safeCameraOpen()){
-			_preview = new Preview(this, _camera);
-			FrameLayout frame = (FrameLayout)findViewById(R.id.preview);
+			_preview = new Preview(_context, _camera);
+			FrameLayout frame = (FrameLayout)view.findViewById(R.id.preview);
 			frame.addView(_preview);
 			
-			Button button = (Button)findViewById(R.id.capture);
+			Button button = (Button)view.findViewById(R.id.capture);
 			button.setOnClickListener(new View.OnClickListener(){
 
 				@Override
@@ -41,7 +47,10 @@ public class CameraActivity extends Activity{
 				
 			});
 		}
-	}
+		
+		return view; 
+	 }
+	
 	
 	private PictureCallback MyJPGCallback = new PictureCallback(){
 
@@ -49,7 +58,7 @@ public class CameraActivity extends Activity{
 		public void onPictureTaken(byte[] data, Camera camera) {	
 			File pictureFile = FileManager.getOutputMediaFile("temp.jpg");
 			if(pictureFile == null){
-				Toast.makeText(getApplicationContext(), "Failed to save file.", Toast.LENGTH_SHORT).show();
+				Toast.makeText(_context, "Failed to save file.", Toast.LENGTH_SHORT).show();
 				return;
 			}
 			
@@ -90,14 +99,14 @@ public class CameraActivity extends Activity{
 	}
 	
 	@Override
-    protected void onResume() {
+	public void onResume() {
         super.onResume();
         if(_camera == null && safeCameraOpen())
 			_preview.setCamera(_camera);
     }
 	
 	@Override
-    protected void onPause() {
+	public void onPause() {
         super.onPause();
         releaseCameraAndPreview();
     }

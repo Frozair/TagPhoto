@@ -28,10 +28,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.newrdev.tagphoto.CameraActivity"
-            android:label="@string/app_name" >
-        </activity>
-        <activity
             android:name="com.newrdev.tagphoto.SaveActivity"
             android:label="@string/app_name" >
         </activity>

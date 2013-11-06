@@ -10,11 +10,17 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.app.Activity;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 
 public class MainActivity extends Activity{
+	final static String CAMERA_FRAG = "Camera";
+	
 	private String[] _drawerItems;
 	private CharSequence _actionBarTitle;
+	private ListView _drawerList;
+	private DrawerLayout _drawerLayout;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -22,11 +28,17 @@ public class MainActivity extends Activity{
 		setContentView(R.layout.activity_main);
 		
 		_drawerItems = getResources().getStringArray(R.array.drawer_items);
-		DrawerLayout drawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
-		ListView drawerList = (ListView)findViewById(R.id.left_drawer);
+		_drawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
+		_drawerList = (ListView)findViewById(R.id.left_drawer);
 		
-		drawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_item, _drawerItems));
-		drawerList.setOnItemClickListener(new DrawerItemClickListener());
+		_drawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_item, _drawerItems));
+		
+		DrawerItemClickListener listener = new DrawerItemClickListener();
+		_drawerList.setOnItemClickListener(listener);
+		
+		if (savedInstanceState == null) {
+			listener.selectItem(0);
+		}
 	}
 	
 	private class DrawerItemClickListener implements ListView.OnItemClickListener{
@@ -37,13 +49,27 @@ public class MainActivity extends Activity{
 		}
 		
 		private void selectItem(int position){
-			Intent intent = null;
-			if(_drawerItems[position].contains("Camera")){
-				intent = new Intent(getApplicationContext(), CameraActivity.class);
-			}else{
-				intent = new Intent(getApplicationContext(), BrowseActivity.class);
+			// Highlight the selected item, update the title, and close the drawer
+		    _drawerList.setItemChecked(position, true);
+		    setTitle(_drawerItems[position]);
+		    _drawerLayout.closeDrawer(_drawerList);
+			switch(position){
+			case 0:
+				FragmentManager fragMngr = getFragmentManager();
+				FragmentTransaction xact = fragMngr.beginTransaction();
+				if(fragMngr.findFragmentByTag(CAMERA_FRAG) == null){
+					xact.add(R.id.content, new CameraFragment(), CAMERA_FRAG);
+				}
+				xact.commit();
+				break;
+				
+			case 1:
+				Intent intent = new Intent(getApplicationContext(), BrowseActivity.class);
+				startActivity(intent);
+				break;
 			}
-			startActivity(intent);
+			
+
 		}
 	}
 	
