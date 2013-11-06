@@ -53,7 +53,7 @@ public class MainActivity extends Activity{
 			// Highlight the selected item, update the title, and close the drawer
 		    _drawerList.setItemChecked(position, true);
 		    setTitle(_drawerItems[position]);
-		    //_drawerLayout.closeDrawer(_drawerList);
+		    _drawerLayout.closeDrawer(_drawerList);
 		    
 		    FragmentManager fragMngr = getFragmentManager();
 			FragmentTransaction xact = fragMngr.beginTransaction();
